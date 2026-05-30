@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beebug 🐝 </title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="style.css">
+    <!-- Font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cascadia+Code:wght@400;700&display=swap">
+</head>
+<body>
+    <!-- Authentication Overlay -->
+    <div id="auth-overlay" class="auth-overlay">
+        <div class="auth-card glass-panel">
+            <div class="auth-logo">
+                <i class='bx bx-bug'></i>
+                <h2>Beebug</h2>
+            </div>
+            <p>Sign in to your debugging workspace</p>
+            <form id="login-form">
+                <div class="input-group">
+                    <i class='bx bx-user'></i>
+                    <input type="text" id="username" placeholder="Username" required>
+                </div>
+                <div class="input-group">
+                    <i class='bx bx-lock-alt'></i>
+                    <input type="password" id="password" placeholder="Password" required>
+                </div>
+                <button type="submit" class="auth-btn">Sign In <i class='bx bx-right-arrow-alt'></i></button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div class="app-container glass-panel" id="main-app" style="display: none;">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class='bx bx-bug glow-icon'></i>
+                <span class="brand-logo">Beebug</span>
+            </div>
+            
+            <button class="new-debug-btn" id="new-debug-btn">
+                <i class='bx bx-plus'></i> New Debug
+            </button>
+
+            <div class="nav-section">
+                <h4>Features</h4>
+                <ul class="nav-links">
+                    <li class="active" data-target="home"><i class='bx bx-message-square-dots'></i> Home</li>
+                    <li data-target="history"><i class='bx bx-history'></i> History</li>
+                    <li data-target="library"><i class='bx bx-library'></i> Library</li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h4>Settings & Help</h4>
+                <ul class="nav-links">
+                    <li data-target="settings"><i class='bx bx-cog'></i> Settings</li>
+                    <li data-target="integrations"><i class='bx bx-plug'></i> Integrations</li>
+                </ul>
+            </div>
+
+            <div class="user-profile">
+                <div class="avatar" id="display-avatar">U</div>
+                <div class="user-info">
+                    <span class="name" id="display-name">Developer</span>
+                    <span class="role">Pro Plan</span>
+                </div>
+                <button id="logout-btn" class="logout-btn" title="Logout"><i class='bx bx-log-out'></i></button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navigation -->
+            <header class="top-header">
+                <button id="mobile-menu-btn" class="mobile-menu-btn"><i class='bx bx-menu'></i></button>
+            </header>
+
+            <!-- View: HOME (Chat) -->
+            <div id="view-home" class="tab-content active">
+                <div class="chat-container" id="chat-container">
+                    <div class="welcome-screen" id="welcome-screen">
+                        <div class="welcome-icon">
+                            <i class='bx bx-bug'></i>
+                        </div>
+                        <h1>Welcome to Beebug</h1>
+                        <p>Start by pasting your error, and let the AI take over.<br>Not sure where to start?</p>
+                        
+                        <div class="suggestion-cards">
+                            <div class="card glass-panel" onclick="document.getElementById('error-input').value='TypeError: Cannot read properties of undefined (reading \'map\')'">
+                                <i class='bx bx-message-error'></i>
+                                <h3>Analyze Error</h3>
+                                <p>Paste a runtime error or stack trace to find the root cause.</p>
+                            </div>
+                            <div class="card glass-panel" onclick="document.getElementById('error-input').value='SyntaxError: expected expression, got keyword \'else\''">
+                                <i class='bx bx-code-block'></i>
+                                <h3>Fix Syntax</h3>
+                                <p>Quickly resolve compiler logs and syntax issues.</p>
+                            </div>
+                            <div class="card glass-panel" onclick="document.getElementById('error-input').value='Why is my React component rendering twice?'">
+                                <i class='bx bx-brain'></i>
+                                <h3>Logic Bugs</h3>
+                                <p>Describe unexpected behavior in your code logic.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-area">
+                    <div class="input-wrapper glass-panel">
+                        <button class="attach-btn"><i class='bx bx-paperclip'></i></button>
+                        <textarea id="error-input" rows="1" placeholder="Paste your error message, compiler logs, or stack trace..."></textarea>
+                        <button id="analyze-btn" class="send-btn"><i class='bx bx-send'></i></button>
+                    </div>
+                    <p class="disclaimer">Beebug may produce inaccurate information about code. Double-check important fixes.</p>
+                </div>
+            </div>
+
+            <!-- View: HISTORY -->
+            <div id="view-history" class="tab-content">
+                <div class="page-header">
+                    <h2><i class='bx bx-history'></i> Debugging History</h2>
+                    <p>Review your past debugging sessions.</p>
+                </div>
+                <div class="list-container" id="history-list-container">
+                    <div class="empty-state" style="text-align: center; color: var(--text-secondary); padding: 3rem;">
+                        <i class='bx bx-ghost' style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                        <p>No history yet. Start debugging to see your past sessions here!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View: LIBRARY -->
+            <div id="view-library" class="tab-content">
+                <div class="page-header">
+                    <h2><i class='bx bx-library'></i> Snippet Library</h2>
+                    <p>Your saved code fixes and commonly used snippets.</p>
+                </div>
+                <div class="grid-container" id="library-grid-container">
+                    <!-- Dynamic content will be injected here -->
+                    <div class="empty-state" style="text-align: center; color: var(--text-secondary); padding: 3rem; grid-column: 1 / -1;">
+                        <i class='bx bx-bookmark' style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                        <p>No saved snippets yet. Save fixes from your chats to build your library!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View: SETTINGS -->
+            <div id="view-settings" class="tab-content">
+                <div class="page-header">
+                    <h2><i class='bx bx-cog'></i> Settings</h2>
+                    <p>Manage your account and preferences.</p>
+                </div>
+                <div class="settings-container">
+                    <div class="setting-group glass-panel">
+                        <h3>Appearance</h3>
+                        <div class="setting-row">
+                            <span>Theme</span>
+                            <select id="theme-select" class="glass-select">
+                                <option value="frutiger">Frutiger Aero</option>
+                                <option value="dark">Dark Mode</option>
+                                <option value="transparent-dark">Transparent Dark</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="setting-group glass-panel">
+                        <h3>AI Preferences</h3>
+                        <div class="setting-row">
+                            <span>Default Model</span>
+                            <select id="model-select" class="glass-select">
+                                <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
+                            </select>
+                        </div>
+                        <div class="setting-row">
+                            <span>Explanations</span>
+                            <select id="explanation-select" class="glass-select">
+                                <option value="beginner">Beginner Friendly</option>
+                                <option value="technical">Technical</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View: INTEGRATIONS -->
+            <div id="view-integrations" class="tab-content">
+                <div class="page-header">
+                    <h2><i class='bx bx-plug'></i> Integrations</h2>
+                    <p>Connect Beebug to your favorite tools.</p>
+                </div>
+                <div class="grid-container">
+                    <div class="grid-card glass-panel integration-card">
+                        <i class='bx bxl-github' style="font-size: 3rem; color: #333;"></i>
+                        <h4>GitHub</h4>
+                        <p>Automatically analyze failing Actions.</p>
+                        <button class="connect-btn">Connect</button>
+                    </div>
+                    <div class="grid-card glass-panel integration-card">
+                        <i class='bx bxl-gitlab' style="font-size: 3rem; color: #fc6d26;"></i>
+                        <h4>GitLab</h4>
+                        <p>Analyze merge request pipelines.</p>
+                        <button class="connect-btn">Connect</button>
+                    </div>
+                    <div class="grid-card glass-panel integration-card">
+                        <i class='bx bxl-slack' style="font-size: 3rem; color: #4A154B;"></i>
+                        <h4>Slack</h4>
+                        <p>Send debug reports to your team.</p>
+                        <button class="connect-btn">Connect</button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
